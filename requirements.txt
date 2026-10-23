@@ -1,0 +1,9 @@
+﻿# ComfyUI-Carneiro - Requirements
+# ---------------------------------
+# This custom node has NO external pip dependencies.
+# All modules used (os, gc, json, random, hashlib, time,
+# pathlib, typing, datetime, collections) are part of the
+# Python standard library.
+#
+# Minimum Python version: 3.8
+# (already required by ComfyUI itself)
