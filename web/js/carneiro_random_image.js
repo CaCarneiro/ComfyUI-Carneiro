@@ -11,6 +11,65 @@ app.registerExtension({
       onNodeCreated?.apply(this, arguments);
 
       const node = this;
+      const imagePicker = document.createElement("input");
+      imagePicker.type = "file";
+      imagePicker.accept = "image/*,.exr";
+      imagePicker.hidden = true;
+      document.body.appendChild(imagePicker);
+
+      const btnLoadImage = node.addWidget(
+        "button",
+        "🖼️ Carregar imagem do PC",
+        null,
+        () => imagePicker.click()
+      );
+      btnLoadImage.serialize = false;
+
+      imagePicker.addEventListener("change", async () => {
+        const file = imagePicker.files?.[0];
+        imagePicker.value = "";
+        if (!file) return;
+
+        btnLoadImage.name = "⏳ Enviando imagem...";
+        node.setDirtyCanvas(true, true);
+
+        try {
+          const formData = new FormData();
+          formData.append("image", file);
+          formData.append("type", "input");
+          const response = await fetch("/upload/image", {
+            method: "POST",
+            body: formData,
+          });
+          if (!response.ok) throw new Error(await response.text());
+
+          const uploaded = await response.json();
+          const imagePath = uploaded.subfolder
+            ? `${uploaded.subfolder}/${uploaded.name}`
+            : uploaded.name;
+          const imageWidget = node.widgets?.find((widget) => widget.name === "image");
+          const manualWidget = node.widgets?.find((widget) => widget.name === "manual_image");
+
+          if (Array.isArray(imageWidget?.options?.values) && !imageWidget.options.values.includes(imagePath)) {
+            imageWidget.options.values.push(imagePath);
+          }
+          if (imageWidget) {
+            imageWidget.value = imagePath;
+            imageWidget.callback?.(imagePath);
+          }
+          if (manualWidget) {
+            manualWidget.value = true;
+            manualWidget.callback?.(true);
+          }
+          node.setDirtyCanvas(true, true);
+        } catch (error) {
+          alert("Falha ao carregar a imagem: " + error.message);
+        } finally {
+          btnLoadImage.name = "🖼️ Carregar imagem do PC";
+          node.setDirtyCanvas(true, true);
+        }
+      });
+
       let isRenaming = false;
       let isResetting = false;
 

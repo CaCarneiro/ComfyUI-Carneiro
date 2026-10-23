@@ -31,7 +31,9 @@ Após copiar os arquivos, reinicie o ComfyUI completamente.
 | `include_subfolders` | BOOLEAN | `False` | Buscar recursivamente em subpastas |
 | `seed` | INT | `-1` | `-1` = aleatório verdadeiro, ≥0 = reproduzível |
 | `manual_image` | BOOLEAN | `False` | Ativa o carregamento manual em vez do modo aleatório |
-| `image` | IMAGE | — | Imagem escolhida pelo seletor do ComfyUI quando `manual_image` está ativado |
+| `image` | IMAGE | — | Imagem selecionada pelo botão `Carregar imagem do PC` ou pelo seletor do ComfyUI |
+
+O botão `Carregar imagem do PC` envia a imagem para a pasta `input` do ComfyUI e ativa automaticamente `manual_image`.
 
 ## Outputs — Carneiro Random Image
 
